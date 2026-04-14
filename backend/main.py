@@ -20,14 +20,8 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
+import simulation
 from alerts import generate_alerts
-from simulation import (
-    current_mode,
-    generate_iot_data,
-    reset_overrides,
-    set_mode,
-    set_override,
-)
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -36,6 +30,8 @@ load_dotenv()
 
 _raw_origins: str = os.getenv("CORS_ORIGINS", "http://localhost:5173")
 ALLOWED_ORIGINS: list[str] = [o.strip() for o in _raw_origins.split(",")]
+if "http://localhost:5174" not in ALLOWED_ORIGINS:
+    ALLOWED_ORIGINS.append("http://localhost:5174")
 BROADCAST_INTERVAL: float = float(os.getenv("BROADCAST_INTERVAL_SECS", "6"))
 
 # ---------------------------------------------------------------------------
@@ -106,7 +102,7 @@ background_task: asyncio.Task | None = None
 async def simulation_loop() -> None:
     """Continuously generate IoT data and broadcast it to all clients."""
     while True:
-        iot_data = generate_iot_data()
+        iot_data = simulation.generate_iot_data()
         intelligence = generate_alerts(iot_data)
         payload = {"iot_data": iot_data, "intelligence": intelligence}
         await manager.broadcast(json.dumps(payload))
@@ -162,7 +158,7 @@ async def health_check(request: Request) -> dict:
     """Return service liveness status. Used by load balancers and monitoring."""
     return {
         "status": "ok",
-        "mode": current_mode,
+        "mode": simulation.current_mode,
         "connected_clients": len(manager.active),
     }
 
@@ -195,25 +191,25 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
             if "mode" in msg and msg_type == "":
                 try:
                     validated = SetModeMsg(**msg)
-                    set_mode(validated.mode)
+                    simulation.set_mode(validated.mode)
                 except Exception:
                     pass
 
             elif msg_type == "set_override":
                 try:
                     validated = SetOverrideMsg(**msg)
-                    set_override(validated.zone_id, validated.value)
+                    simulation.set_override(validated.zone_id, validated.value)
                 except Exception:
                     pass
 
             elif msg_type == "reset_overrides":
-                reset_overrides()
+                simulation.reset_overrides()
 
             elif msg_type in ("cheer_sync", "announcement", "emergency", "light_show"):
                 try:
                     validated = BroadcastMsg(**msg)
                     if validated.type == "emergency":
-                        set_mode("Emergency")
+                        simulation.set_mode("Emergency")
                     await manager.broadcast(validated.model_dump_json())
                 except Exception:
                     pass
@@ -236,7 +232,7 @@ async def api_set_mode(mode: str, request: Request) -> dict:
     """
     try:
         validated = SetModeMsg(mode=mode)
-        set_mode(validated.mode)
+        simulation.set_mode(validated.mode)
         return {"status": "success", "mode": validated.mode}
     except Exception as exc:
         return {"status": "error", "detail": str(exc)}

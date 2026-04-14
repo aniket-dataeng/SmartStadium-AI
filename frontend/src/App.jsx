@@ -450,7 +450,7 @@ function UserDashboard({ user, logout, globalAlert, iotData, wsStatus }) {
   const myStandObj = iotData?.stands?.find(s => s.stand_id === user.ticketDetails.stand);
   const standFill = myStandObj ? Math.round((myStandObj.occupancy / myStandObj.capacity) * 100) : 80;
   const nearbyFood = (iotData?.food_stalls || []).slice(0, 3).map(stall => ({
-    ...stall, waitMins: stall.estimated_wait_mins ?? Math.round((stall.queue_length * stall.avg_service_time_sec) / 60) || 3
+    ...stall, waitMins: (stall.estimated_wait_mins ?? Math.round((stall.queue_length * stall.avg_service_time_sec) / 60)) || 3
   }));
 
   return (
