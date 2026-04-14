@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SmartStadium-AI — Real-time crowd management, smart navigation, and attendee experience platform for Wankhede Stadium." />
+    <meta name="theme-color" content="#11141E" />
+    <meta property="og:title" content="SmartStadium-AI | Wankhede Experience" />
+    <meta property="og:description" content="AI-powered crowd management platform for large-scale sporting events." />
+    <meta property="og:type" content="website" />
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self' ws://localhost:8000 wss://localhost:8000 https://www.google-analytics.com; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:;" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>SmartStadium-AI | Wankhede Experience</title>
+
+    <!-- Google tag (gtag.js) — Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PLACEHOLDER');
+    </script>
+  </head>
+  <body>
+    <!-- Skip to main content for screen readers -->
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
