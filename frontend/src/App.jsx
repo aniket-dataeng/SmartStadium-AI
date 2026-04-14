@@ -4,7 +4,11 @@ import './index.css'
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
-const WS_URL = 'ws://localhost:8000/ws';
+const IS_PROD = import.meta.env.PROD;
+const WS_PROTOCOL = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const WS_URL = IS_PROD 
+  ? `${WS_PROTOCOL}//${window.location.host}/ws`
+  : 'ws://localhost:8000/ws';
 const GMAPS_VENUE_URL = 'https://www.google.com/maps/place/Wankhede+Stadium/@18.9388,72.8254,17z';
 
 const VALID_TICKETS = {

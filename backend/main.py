@@ -15,6 +15,8 @@ from typing import Literal
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, field_validator
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -236,6 +238,43 @@ async def api_set_mode(mode: str, request: Request) -> dict:
         return {"status": "success", "mode": validated.mode}
     except Exception as exc:
         return {"status": "error", "detail": str(exc)}
+
+
+# ---------------------------------------------------------------------------
+# Static Frontend Serving (for Unified Deployment)
+# ---------------------------------------------------------------------------
+
+# Mount build artifacts if they exist
+DIST_DIR = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
+if not os.path.exists(DIST_DIR):
+    # Fallback for Docker structure: /app/frontend/dist
+    DIST_DIR = "/app/frontend/dist"
+
+if os.path.exists(DIST_DIR):
+    # Serve assets and images directly
+    assets_dir = os.path.join(DIST_DIR, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+    
+    images_dir = os.path.join(DIST_DIR, "images")
+    if os.path.exists(images_dir):
+        app.mount("/images", StaticFiles(directory=images_dir), name="images")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_frontend(full_path: str):
+        """Serve static files from the frontend/dist folder.
+        
+        If the file exists, return it. Otherwise, return index.html for SPA routing.
+        """
+        file_path = os.path.join(DIST_DIR, full_path)
+        if os.path.isfile(file_path):
+            return FileResponse(file_path)
+        
+        index_path = os.path.join(DIST_DIR, "index.html")
+        if os.path.isfile(index_path):
+            return FileResponse(index_path)
+        
+        return {"detail": "Static frontend not found. Ensure frontend is built."}
 
 
 if __name__ == "__main__":

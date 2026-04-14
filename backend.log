@@ -6,3 +6,37 @@ INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     127.0.0.1:58376 - "GET /health HTTP/1.1" 200 OK
 INFO:     127.0.0.1:55482 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47650 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52054 - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:52056 - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:35502 - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:35506 - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:50664 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50664 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+WARNING:  WatchFiles detected changes in 'backend/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     connection closed
+INFO:     connection closed
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [7243]
+INFO:     Started server process [8343]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:34732 - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:50134 - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:32958 - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:32972 - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:58040 - "GET / HTTP/1.1" 200 OK
